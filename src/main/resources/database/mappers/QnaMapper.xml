@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.iu.home.board.qna.QnaMapper">
+	<select id="getList" resultType="QnaVO" parameterType="Pager">
+		SELECT *
+		FROM QNA
+		ORDER BY NUM DESC
+		LIMIT #{startRow}, #{perPage}
+	</select>
+
+	<insert id="setAdd" parameterType="QnaVO"
+		useGeneratedKeys="true" keyProperty="num">
+		INSERT INTO QNA
+		VALUES (#{num}, #{writer}, #{title}, #{contents}, 0, now(), 0,0,0)
+	</insert>
+
+	<insert id="setFileAdd" parameterType="QnaFileVO">
+		INSERT INTO QNAFILES
+		VALUES (NULL, #{num}, #{fileName}, #{oriName})
+	</insert>
+
+	<select id="getDetail" parameterType="QnaVO"
+		resultMap="getDetail">
+		<!-- SELECT * FROM QNA Q INNER JOIN QNAFILES QF ON Q.NUM = QF.NUM WHERE 
+			Q.NUM = #{num} -->
+		SELECT Q.*, QF.*
+		FROM QNA Q
+		LEFT JOIN
+		QNAFILES QF
+		ON Q.NUM = QF.NUM
+		WHERE Q.NUM=#{num}
+	</select>
+
+	<select id="getFileDetail" resultType="QnaFileVO"
+		parameterType="QnaFileVO">
+		SELECT * FROM QNAFILES WHERE
+		FILENUM=#{fileNum}
+	</select>
+
+	<resultMap type="QnaVO" id="getDetail">
+		<id column="NUM" property="num" />
+		<result column="WRITER" property="writer" />
+		<result column="TITLE" property="title" />
+		<result column="CONTENTS" property="contents" />
+		<result column="HIT" property="hit" />
+		<result column="REGDATE" property="regDate" />
+		<result column="REF" property="ref" />
+		<result column="STEP" property="step" />
+		<result column="DEPTH" property="depth" />
+		
+		<collection property="qnaFileVOs" javaType="List"
+			ofType="QnaFileVO">
+			<id column="FILENUM" property="fileNum" />
+			<result column="NUM" property="num" />
+			<result column="FILENAME" property="fileName" />
+			<result column="ORINAME" property="oriName" />
+		</collection>
+		
+	</resultMap>
+
+	<insert id="setUpdate" parameterType="QnaVO">
+		UPDATE QNA SET
+		TITLE=#{title}, CONTENTS=#{contents} WHERE NUM=#{num}
+	</insert>
+
+	<delete id="setFileDelete" parameterType="QnaFileVO">
+		DELETE FROM QNAFILES
+		WHERE FILENUM=#{fileNum}
+	</delete>
+
+</mapper>    
