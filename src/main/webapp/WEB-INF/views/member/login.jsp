@@ -14,6 +14,7 @@
 	<section class="container-fluid ">
 		<div class="row">
 			<form action="./login" method="post" id="frm">
+			
 				<div class="mb-3">
 					<label for="id" class="form-label">ID</label> <input type="text"
 						name="id" class="form-control" id="id"
@@ -21,15 +22,18 @@
 					<div id="emailHelp" class="form-text">We'll never share your
 						email with anyone else.</div>
 				</div>
+				
 				<div class="mb-3">
 					<label for="password" class="form-label">Password</label> <input
 						type="password" name="password" class="form-control" id="password">
 				</div>
+				
 				<div class="mb-3 form-check">
 					<input type="checkbox" class="form-check-input" id="exampleCheck1">
 					<label class="form-check-label" for="exampleCheck1">Check
 						me out</label>
 				</div>
+				
 				<button type="submit" class="btn btn-primary" id="btn">Submit</button>
 			</form>
 

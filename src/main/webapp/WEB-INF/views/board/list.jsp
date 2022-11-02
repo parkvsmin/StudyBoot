@@ -11,7 +11,7 @@
 <body>
 	<h1>List Page</h1>
 	
-	<table border="1">
+	<table class="table table-striped">
 				<thead>
 					<tr>
 						<th>num</th>

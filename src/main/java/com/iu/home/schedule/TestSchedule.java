@@ -13,13 +13,13 @@ public class TestSchedule {
 	
 	@Scheduled(cron = "* * * * * *")
 	public void cron() {
-		log.info("Cron 매초 실행");
-		log.info(Calendar.getInstance().getTime().toString());
+		//log.info("Cron 매초 실행");
+		//log.info(Calendar.getInstance().getTime().toString());
 	}
 	
 	@Scheduled(fixedRate = 3000,initialDelayString = "1000")
 	public void ts1() {
-		log.info("Schudule 실행");
+		//log.info("Schudule 실행");
 	}
 
 }

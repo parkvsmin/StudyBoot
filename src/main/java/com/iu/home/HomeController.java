@@ -27,6 +27,24 @@ public class HomeController {
 	@Autowired
 	private QnaMapper qnaMapper;
 	
+	@GetMapping("/user")
+	@ResponseBody
+	public String member() {
+		return "Member Role";
+	}
+	
+	@GetMapping("/manager")
+	@ResponseBody
+	public String manager() {
+		return "Manager Role";
+	}
+	
+	@GetMapping("/admin")
+	@ResponseBody
+	public String admin() {
+		return "Admin Role";
+	}
+	
 	@GetMapping("/")
 	public String home() throws Exception {
 		log.info("====================");
