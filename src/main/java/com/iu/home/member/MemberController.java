@@ -81,12 +81,19 @@ public class MemberController {
 //
 //	}
 
-	@GetMapping("logout")
-	public String getLogout(HttpSession session)throws Exception {
-		session.invalidate();
-		return "redirect:../";
-
+//	@GetMapping("logout")
+//	public String getLogout(HttpSession session)throws Exception {
+//		log.info("=====내가만든 로그아웃 메서드=====");
+//		session.invalidate();
+//		return "redirect:../";
+//
+//	}
+	
+	@GetMapping("mypage")
+	public void getMyPage()throws Exception {
+		
 	}
+	
 
 	@GetMapping("idCheck")
 	@ResponseBody

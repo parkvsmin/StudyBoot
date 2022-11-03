@@ -5,6 +5,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 
@@ -35,13 +37,13 @@ public class SecurityConfig {
 				.authorizeHttpRequests()
 					.antMatchers("/").permitAll()
 					.antMatchers("/admin").hasRole("ADMIN")
-					.antMatchers("/manager").hasRole("MANAGER")
+					.antMatchers("/manager").hasAnyRole("ADMIN","MANAGER")
 					.antMatchers("/qna/list").permitAll()
 					.antMatchers("/qna/**").hasRole("MEMBER")
 					.anyRequest().permitAll()
 					.and()
 					
-				.formLogin() // 로그인 폼 인증 설정
+			.formLogin() // 로그인 폼 인증 설정
 				.loginPage("/member/login") // 내장된 로그인폼을 사용하지 않고 개발자가 만든 폼요청 URL
 				//.loginProcessingUrl("login") // 로그인을 요청할 form 태그의 action의 주소 지정
 				.passwordParameter("password") // 패스워드에 파라미터는 password이지만 개발자가 다른 파라미터 이름을 사용할 떄
@@ -50,10 +52,20 @@ public class SecurityConfig {
 				.failureUrl("/member/login") //인증에 실패했을 경우 요청할 URL
 				.permitAll()
 				.and()
-				.logout()
+			.logout()
+				.logoutUrl("/member/logout")
+				.logoutSuccessUrl("/")
+				.invalidateHttpSession(true)
+				.deleteCookies("JSESSIONID")
 				.permitAll();
 		
 		return httpSecurity.build();
+	}
+	
+	//평문(Clear Text)을 암호화 시켜주는 객체생성
+	@Bean
+	public PasswordEncoder getEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 	
 

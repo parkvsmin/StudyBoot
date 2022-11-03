@@ -28,11 +28,13 @@
 		INNER JOIN
 		ROLE R
 		ON MR.num = R.num
-		WHERE M.id=#{id} and M.password =#{password}
+		WHERE M.id=#{username} 
+		<!-- and M.password =#{password} -->
 	</select>
 
 	<resultMap type="MemberVO" id="getLoginResult">
 		<id column="ID" property="id" />
+		<result column="PASSWORD" property="password" />
 		<result column="NAME" property="name" />
 		<result column="EMAIL" property="email" />
 		<collection property="roleVOs" javaType="List"
