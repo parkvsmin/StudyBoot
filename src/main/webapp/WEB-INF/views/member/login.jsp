@@ -20,7 +20,7 @@
 	<section class="container-fluid ">
 		<div class="row">
 			<form action="./login" method="post" id="frm">
-
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 				<div class="mb-3">
 					<label for="id" class="form-label">ID</label> <input type="text"
 						name="id" value="${cookie.userId.value}" class="form-control"
@@ -39,7 +39,8 @@
 						id="exampleCheck1"> <label class="form-check-label"
 						for="exampleCheck1">ID 기억하기</label>
 				</div>
-
+				
+				<input type="checkbox" name="rememberMe" class="form-check-input" id="exampleCheck2">RememberMe
 				<button type="submit" class="btn btn-primary" id="btn">Submit</button>
 			</form>
 

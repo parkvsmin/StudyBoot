@@ -1,5 +1,7 @@
 package com.iu.home.config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,7 +11,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.iu.home.member.MemberSecurityService;
+import com.iu.home.member.MemberSocialService;
 import com.iu.home.member.security.LoginFail;
 import com.iu.home.member.security.LoginSuccess;
 import com.iu.home.member.security.LogoutCustom;
@@ -28,6 +35,10 @@ public class SecurityConfig {
 	private LogoutCustom logoutCustom;
 	@Autowired
 	private LogoutSuccessCustom logoutSuccessCustom;
+	@Autowired
+	private MemberSecurityService memberSecurityService;
+	@Autowired
+	private MemberSocialService memberSocialService;
 	
 	@Bean
 	//public을 선언하면 default로 바꾸라는 메세지 출력
@@ -45,16 +56,17 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity httpSecurity)throws Exception {
 		httpSecurity
-					.cors()
+				.cors()
+					.configurationSource(this.corsConfigurationSource()) 
 					.and()
 					.csrf()
 					.disable()
-				.authorizeHttpRequests()
+				.authorizeRequests()
 					.antMatchers("/").permitAll()
 					.antMatchers("/admin").hasRole("ADMIN")
 					.antMatchers("/manager").hasAnyRole("ADMIN","MANAGER")
 					.antMatchers("/qna/list").permitAll()
-					.antMatchers("/qna/**").hasRole("MEMBER")
+					//.antMatchers("/qna/**").hasRole("MEMBER")
 					.anyRequest().permitAll()
 					.and()
 					
@@ -76,16 +88,41 @@ public class SecurityConfig {
 				.addLogoutHandler(logoutCustom)
 				.invalidateHttpSession(true)
 				.deleteCookies("JSESSIONID")
-				.permitAll();
+				.permitAll()
+				.and()
+			.rememberMe()
+				.rememberMeParameter("rememberMe") 
+				.tokenValiditySeconds(300)       
+				.key("rememberMe")  
+				.userDetailsService(memberSecurityService)
+				.authenticationSuccessHandler(loginSuccess)
+				.and()
+			.oauth2Login() // Social Login 설정
+				.userInfoEndpoint()
+				.userService(memberSocialService);
 		
 		return httpSecurity.build();
 	}
 	
+
 	//평문(Clear Text)을 암호화 시켜주는 객체생성
 	@Bean
 	public PasswordEncoder getEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+	
+	//@Bean
+		public CorsConfigurationSource corsConfigurationSource() {
+			CorsConfiguration configuration = new CorsConfiguration();
+			configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500", "http://192.168.1.20:5500", "http://192.168.1.2:5500", "*"));//List<Integer>
+			configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
+			
+			UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+			source.registerCorsConfiguration("/**", configuration);
+			
+			
+			return source;
+		}
 	
 
 }
