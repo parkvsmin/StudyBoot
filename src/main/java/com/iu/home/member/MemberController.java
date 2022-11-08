@@ -34,6 +34,7 @@ public class MemberController {
 	@Autowired
 	private MemberService memberService;
 
+
 	@GetMapping("add")
 	public void setAdd(@ModelAttribute MemberVO memberVO)throws Exception {
 		//MemberVO memberVO = new  MemberVO();
@@ -75,11 +76,11 @@ public class MemberController {
 		if(error) {
 			model.addAttribute("msg","ID 또는 PW를 확인하세요");
 		}
-		
-		
+
+
 		//Controller에서 받아서 jsp로 다시 보내도 됨	
 	}
-	
+
 	@PostMapping("login")
 	public String getLogin()throws Exception {
 		log.info("=====Login Post=====");
@@ -87,27 +88,32 @@ public class MemberController {
 
 	}
 
-//	@PostMapping("login")
-//	public String getLogin(MemberVO memberVO, HttpSession session)throws Exception {
-//		memberVO = memberService.getLogin(memberVO);
-//		session.setAttribute("member", memberVO);
-//		return "redirect:../";
-//
-//	}
+	//	@PostMapping("login")
+	//	public String getLogin(MemberVO memberVO, HttpSession session)throws Exception {
+	//		memberVO = memberService.getLogin(memberVO);
+	//		session.setAttribute("member", memberVO);
+	//		return "redirect:../";
+	//
+	//	}
 
-//	@GetMapping("logout")
-//	public String getLogout(HttpSession session)throws Exception {
-//		log.info("=====내가만든 로그아웃 메서드=====");
-//		session.invalidate();
-//		return "redirect:../";
-//
-//	}
-	
+	//	@GetMapping("logout")
+	//	public String getLogout(HttpSession session)throws Exception {
+	//		log.info("=====내가만든 로그아웃 메서드=====");
+	//		session.invalidate();
+	//		return "redirect:../";
+	//
+	//	}
+
 	@GetMapping("mypage")
 	public void getMyPage()throws Exception {
-		
+
 	}
-	
+
+	@GetMapping("logoutResult")
+	public String socialLogout()throws Exception {
+		return "redirect:../";
+	}
+
 
 	@GetMapping("idCheck")
 	@ResponseBody

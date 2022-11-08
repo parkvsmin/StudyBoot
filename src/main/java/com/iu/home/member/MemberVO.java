@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -15,18 +16,19 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import lombok.Data;
 
 @Data
-public class MemberVO implements UserDetails{
-	
+public class MemberVO implements UserDetails, OAuth2User{
+
 	@NotBlank(message = "ID는 꼭 필요해 !!!")
 	private String id;
 	@NotBlank(message = "중복된 ID 입니다 !!!")
 	private String idCheck;
 	@NotBlank
-//	@Size(max=10, min=8)
+	//	@Size(max=10, min=8)
 	private String password;
 	private String passwordCheck;
 	@NotBlank
@@ -39,8 +41,15 @@ public class MemberVO implements UserDetails{
 	@Past()
 	private Date birth;
 	private boolean enabled;
-	
+
 	private List<RoleVO> roleVOs;
+
+	//===Social Login===
+	//kakao Naver Google
+	private String social;
+
+	//OAuth2User, Token등 정보 저장
+	private Map<String, Object> attributes;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -48,16 +57,16 @@ public class MemberVO implements UserDetails{
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		for(RoleVO roleVO : roleVOs) {
 			authorities.add(new SimpleGrantedAuthority(roleVO.getRoleName()));
-			
+
 		}
-		
+
 		return authorities;
 	}
-	
-//	@Override
-//	public String getPassword() {
-//		return this.getPassword;
-//	}
+
+	//	@Override
+	//	public String getPassword() {
+	//		return this.getPassword;
+	//	}
 
 	@Override
 	public String getUsername() {
@@ -92,12 +101,19 @@ public class MemberVO implements UserDetails{
 		// false : 만료됨 (로그인 불가)
 		return true;
 	}
-	
+
 	//isEnabled
 	//계정 사용 여부
 	// true : 계정 활성화(계정 사용 가능)
 	// false : 계정 비활성화(계정 사용 불가 로그인 불가)
 	public boolean isEnabled() {
 		return true;
+	}
+
+
+	@Override
+	public Map<String, Object> getAttributes() {
+		// TODO Auto-generated method stub
+		return this.attributes;
 	}
 }

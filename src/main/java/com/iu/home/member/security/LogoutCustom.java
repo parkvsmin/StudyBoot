@@ -17,6 +17,20 @@ public class LogoutCustom implements LogoutHandler {
 		// TODO Auto-generated method stub
 		request.getSession().invalidate();
 		log.info("=====LogoutHandler=====");
+		
+		//1 일반 로그인??? 아니면 social Login 사용???
+		log.info("OAth => {}",authentication);
+		
+//		if(social !=null && social.equals("kakao")) {
+//			
+//		}else if(social !=null && social.equals("google")) {
+//			
+//		}else {
+//			
+//		}
+		
+		request.getSession().invalidate();
+		
 	}
 
 }
