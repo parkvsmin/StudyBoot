@@ -8,6 +8,8 @@ import javax.validation.Valid;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.slf4j.Slf4j;
@@ -114,19 +115,26 @@ public class MemberController {
 		return "redirect:../";
 	}
 
+	@GetMapping("delete")
+	public ModelAndView setDelete(HttpSession session, String pw)throws Exception {
+		//1. Social인지 일반로그인인지 구분
+		ModelAndView mv = new ModelAndView();
+		SecurityContextImpl context = (SecurityContextImpl)session.getAttribute("SPRING_SECURITY_CONTEXT");
+		Authentication authentication = context.getAuthentication();
+		MemberVO memberVO =(MemberVO)authentication.getPrincipal();
+		if(memberVO.getSocial() !=null) {
 
-	@GetMapping("idCheck")
-	@ResponseBody
-	public int getIdCheck(MemberVO memberVO)throws Exception {
-		return memberService.getIdCheck(memberVO);
-		//		int result=0;
-		//		
-		//		if(memberVO !=null) {
-		//			result=1;
-		//		}
-		//		
-		//		return result;
+			int result = memberService.setDelete(memberVO);
 
+			if(result>0) {
+				//탈퇴 성공
+				mv.setViewName("redirect../logout");
+			}else {
+				//탈퇴 실패
+			}
+		}
+		log.info("Member => {}", memberVO);
+		return mv;
 	}
 
 }

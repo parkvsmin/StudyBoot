@@ -38,10 +38,12 @@
 			<a href="./member/mypage">MyPage</a>
 			<a href="./member/logout">Logout</a>
 			<button type="button">KAKAO LOGOUT</button>
-			<form action="./member/logout" method="post">
+			<form id="outForm" action="./member/logout" method="post">
 				<sec:csrfInput />
 				<button>logout</button>
 			</form>
+			
+			<a href="/member/delete">회원탈퇴</a>
 		</sec:authorize>
 
 

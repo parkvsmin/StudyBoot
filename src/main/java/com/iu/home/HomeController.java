@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import com.iu.home.board.qna.PostVO;
 import com.iu.home.board.qna.QnaMapper;
 import com.iu.home.board.qna.QnaVO;
 import com.iu.home.member.MemberVO;
@@ -92,9 +93,9 @@ public class HomeController {
 		//3. 요청 정보 객체 (1,2번을 모음)
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(params, headers);
 		//4 전송 후 결과
-		ResponseEntity<String> response = restTemplate.getForEntity("https://jsonplaceholder.typicode.com/posts/1", String.class, request);
-		String result = response.getBody();
-		log.info("response => {}",response);
+		List<PostVO> posts = restTemplate.getForObject("https://jsonplaceholder.typicode.com/posts", List.class, request);
+		//PostVO postVO = response.getBody();
+		log.info("PostVO => {}",posts);
 		
 		log.info("====================");
 		Enumeration<String> en = session.getAttributeNames();
