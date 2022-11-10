@@ -1,7 +1,10 @@
 package com.iu.home;
 
+import java.util.Calendar;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -20,11 +23,16 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.iu.home.board.qna.PostVO;
 import com.iu.home.board.qna.QnaMapper;
 import com.iu.home.board.qna.QnaVO;
 import com.iu.home.member.MemberVO;
+import com.iu.home.util.TestInterface;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 
 
@@ -45,6 +53,24 @@ public class HomeController {
 	@Autowired
 	private QnaMapper qnaMapper;
 	
+	@GetMapping("/arrow")
+	public void arrow() {
+		//Lamda식(JS Arrow Function)
+		TestInterface t = (m)->System.out.println(m);
+		t.info("test");
+		
+		TestInterface t2 = new TestInterface() {
+			
+			@Override
+			public void info(String message) {
+				// TODO Auto-generated method stub
+				System.out.println(message);
+				
+			}
+		};
+		t2.info("test");
+	}
+	
 	@GetMapping("/user")
 	@ResponseBody
 	public String member() {
@@ -63,6 +89,7 @@ public class HomeController {
 		return "Admin Role";
 	}
 	
+	
 	@GetMapping("/address")
 	@ResponseBody
 	public String address()throws Exception {
@@ -78,6 +105,32 @@ public class HomeController {
 		ResponseEntity<String> res = restTemplate.getForEntity("https://dapi.kakao.com/v2/local/search/address.json", String.class, req);
 		
 		return res.getBody();
+	}
+	
+	@GetMapping("/web")
+	public String webClientTest() {
+		WebClient webClient = WebClient.builder()
+				   .baseUrl("https://jsonplaceholder.typicode.com/")
+				   .build();
+		Flux<PostVO> res = webClient.get()
+				.uri("posts")
+				.retrieve()
+				.bodyToFlux(PostVO.class);
+
+
+		PostVO postVO = res.blockFirst();
+		
+//		public void (PostVO postVO) {}
+//		a.test(postVO)
+		
+		res.subscribe((s)->{
+			PostVO pvo = s;
+			log.info("ID => {}",s.getId());
+		});
+		
+		log.info("Result => {}",postVO);
+							 
+		return "";
 	}
 	
 	@GetMapping("/")

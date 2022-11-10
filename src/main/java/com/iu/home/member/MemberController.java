@@ -128,7 +128,7 @@ public class MemberController {
 
 			if(result>0) {
 				//탈퇴 성공
-				mv.setViewName("redirect../logout");
+				mv.setViewName("redirect:./logout");
 			}else {
 				//탈퇴 실패
 			}
