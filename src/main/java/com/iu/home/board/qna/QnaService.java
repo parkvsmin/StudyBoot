@@ -3,6 +3,8 @@ package com.iu.home.board.qna;
 import java.io.File;
 import java.util.List;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,7 +26,7 @@ public class QnaService {
 	private FileManager fileManager;	
 	@Value("${app.upload.qna}")
 	private String path;
-
+	
 	public List<QnaVO> getList(Pager pager)throws Exception{
 		pager.makeRow();
 		return qnaMapper.getList(pager);
@@ -81,6 +83,19 @@ public class QnaService {
 			file.delete();
 		}
 		return result;
+	}
+	
+	public String setSummerFile(MultipartFile files)throws Exception {
+		String fileName = fileManager.saveFile(files, path);
+		fileName = "/file/qna/"+fileName;
+		return fileName;
+	}
+	
+	public boolean setSummerFileDelete(String fileName)throws Exception {
+		fileName = fileName.substring(fileName.lastIndexOf("/")+1);
+		log.info("fileNmae => {}", fileName);
+		File file = new File(path, fileName);
+		return file.delete();
 	}
 
 }

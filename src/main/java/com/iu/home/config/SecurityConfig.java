@@ -50,7 +50,8 @@ public class SecurityConfig {
 				.antMatchers("/css/**")
 				.antMatchers("/js/**")
 				.antMatchers("/favicon/**")
-				.antMatchers("/resources/**");
+				.antMatchers("/resources/**")
+				.antMatchers("/file/**");
 	}
 	
 	@Bean

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -23,20 +24,21 @@ import com.iu.home.util.Pager;
 @Controller
 @RequestMapping("/qna/*")
 public class QnaController {
-	
+
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private QnaService qnaService;
-	
+
 	@GetMapping("hack")
 	@ResponseBody
 	public int hack (QnaVO qnaVO)throws Exception {
 		qnaService.setAdd(qnaVO);
-		
+
 		return 1;
 	}
-	
+
+
 	@GetMapping("list")
 	public ModelAndView getList(Pager pager)throws Exception {
 		ModelAndView mv = new ModelAndView();
@@ -46,13 +48,13 @@ public class QnaController {
 		mv.setViewName("board/list");
 		return mv;
 	}
-	
+
 	@GetMapping("add")
 	public String setAdd(@ModelAttribute QnaVO qnaVO)throws Exception {
 		return "board/write";
-	
+
 	}
-	
+
 	@PostMapping("add")
 	public ModelAndView setAdd(@Valid QnaVO qnaVO, BindingResult bindingResult, RedirectAttributes redirectAttributes, ModelAndView mv)throws Exception {
 		if(bindingResult.hasErrors()) {
@@ -61,13 +63,13 @@ public class QnaController {
 			mv.setViewName("board/write");
 			return mv;
 		}
-		
+
 		int result = qnaService.setAdd(qnaVO);
 		redirectAttributes.addAttribute("result", result);
 		mv.setViewName("redirect:./list");
 		return mv;
 	}
-	
+
 	@GetMapping("detail")
 	public ModelAndView getDetail(QnaVO qnaVO)throws Exception {
 		ModelAndView mv = new ModelAndView();
@@ -76,7 +78,7 @@ public class QnaController {
 		mv.setViewName("board/detail");
 		return mv;
 	}
-	
+
 
 	@GetMapping("update")
 	public ModelAndView setUpdate(QnaVO qnaVO,ModelAndView mv)throws Exception {
@@ -85,18 +87,33 @@ public class QnaController {
 		mv.setViewName("board/update");
 		return mv;
 	}
-	
+
 	@PostMapping("update")
 	public String setUpdate(QnaVO qnaVO)throws Exception {
 		int result = qnaService.setUpdate(qnaVO);
 		return "redirect:./detail?num="+qnaVO.getNum();
 	}
-	
+
 	@PostMapping("fileDelete")
 	@ResponseBody
 	public int setFileDelete(QnaFileVO qnaFileVO)throws Exception {
 		int result = qnaService.setFileDelete(qnaFileVO);
 		return result;
+	}
+
+	@PostMapping("summerFile")
+	@ResponseBody
+	public String setSummerFile(MultipartFile files)throws Exception {
+		log.info("Files => {}",files);
+		String result = qnaService.setSummerFile(files);
+		return result;
+	}
+
+	@PostMapping("summerFileDelete")
+	@ResponseBody
+	public boolean setSummerFileDelete(String fileName)throws Exception {
+		log.info("fileName => {}",fileName);
+		return qnaService.setSummerFileDelete(fileName);
 	}
 
 }

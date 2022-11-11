@@ -57,9 +57,61 @@
       
       <script type="text/javascript">
         $('#contents').summernote({
-          tabsize: 4,
-          height: 250
+          tapsize: 4,
+          height: 250,
+          callbacks: {
+            onImageUpload:function(file) {
+              console.log("imageUpload")
+              //ajax file server로 upload후 경로를 받아서 사용
+              uploadFile(file);
+            },
+            onMediaDelete:function(file){
+              console.log("Delete Media");
+              console.log("DeleteFile =>",file)
+              deleteFile(file);
+            }
+          }
         });
+
+        function deleteFile(file) {
+          console.log("SRC => {}",file.attr("src"))
+          $.post("./summerFileDelete", {fileName:file.attr("src")}, function(result){
+            console.log("result => {}",result);
+          })
+        };
+
+        //글 삭제 할 때 본문내용에 있는 파일도 하드에서 삭제 시켜야댐 
+        
+        //ajax upload 함수
+        function uploadFile(file) {
+          console.log("file",file);
+          console.log("fileName =>",file[0].name);
+          //<form>
+          const formData = new FormData();
+          //<input type="file"
+          formData.append('files',file[0])
+          
+          $.ajax({
+            type:"POST",
+            url:"summerFile",
+            data:formData,
+            //header
+            cache:false,
+            processData:false,
+            contentType:false,
+            enctype:'multipart/form-data',
+            success:function(img) {
+              console.log("imge =>",img)
+              img = '<img src="'+img+'">'
+              $("#contents").summernote('pasteHTML',img);
+              //$("#contents").summernote('insertIamge',img, file[0].name);
+            },
+            error:function() {
+              console.log('Image Upload Fail')
+            }
+
+          });
+        }
       </script>
     </body>
     </html>

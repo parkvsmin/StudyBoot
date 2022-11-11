@@ -68,6 +68,8 @@ public class FileManager extends AbstractView {
 		fi.close();
 
 	}
+	
+	
 
 	public String saveFile(MultipartFile multipartFile, String path)throws Exception {
 
